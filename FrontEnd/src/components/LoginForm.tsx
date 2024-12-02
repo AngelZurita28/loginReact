@@ -8,11 +8,25 @@ function LoginForm({}: Props) {
   const [action, setAction] = useState(0);
   const [error, setError] = useState(false);
   const handleSubmit = (e: any) => {
-    setAction(1);
     e.preventDefault();
+
+    // Validación de campos vacíos
+
     if (user === "" || password === "") {
       setError(true);
       return;
+    }
+
+    // Validación de la contraseña
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (action == 0) {
+      if (!passwordRegex.test(password)) {
+        alert(
+          "La contraseña debe contener al menos una letra mayúscula, una minúscula, un número y un símbolo."
+        );
+        return;
+      }
     }
 
     setError(false);
@@ -30,8 +44,11 @@ function LoginForm({}: Props) {
     })
       .then((response) => response.json())
       .then((result) => {
-        console.log(result.token);
         if (result) {
+          console.log(result.message);
+          if (typeof result.message !== "undefined") {
+            alert(result.message);
+          }
           localStorage.setItem("token", result.token);
           localStorage.setItem("user", user);
           location.reload();
@@ -43,6 +60,7 @@ function LoginForm({}: Props) {
         console.log(error);
       });
   };
+
   return (
     <>
       <form onSubmit={handleSubmit}>
@@ -67,13 +85,13 @@ function LoginForm({}: Props) {
             />
           </div>
           <button
-            onClick={() => setAction(1)}
+            onClick={(e) => setAction(1)}
             className="btn btn-primary w-100 mt-3"
           >
             Login
           </button>
           <button
-            onClick={() => setAction(0)}
+            onClick={(e) => setAction(0)}
             className="btn btn-primary w-100 mt-3"
           >
             Sign In

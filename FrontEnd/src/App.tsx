@@ -27,23 +27,16 @@ function parseJwt({ token }: pjwtProps) {
 let token = localStorage.getItem("token");
 // let tokenParsed = parseJwt({ token });
 // let tokenValidTime = tokenParsed.exp;
-let currentTime = Date.now() / 1000;
+const currentTime = Date.now() / 1000;
 let tokenExistAndIsValid = false;
-let tokentime = "";
 try {
   tokenExistAndIsValid = parseJwt({ token }).exp > currentTime;
-  tokentime = parseJwt({ token }).exp;
 } catch (e) {}
 
 function App() {
   return (
     <>
       <div className="App">
-        {/* {tokenValidTime} */}
-        <p>hola</p>
-        {tokentime}
-        <p>....</p>
-        {currentTime}
         {tokenExistAndIsValid ? <Home /> : <LoginForm />}
       </div>
     </>
