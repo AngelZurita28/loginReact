@@ -2,10 +2,14 @@ const conn = require("../models/db");
 const jwt = require("jsonwebtoken");
 
 module.exports.login = (req, res) => {
-  const { user, password } = req.body;
-  //   console.log(password);
-
-  const consulta = "SELECT * FROM Usuario WHERE correo = ? AND clave = ?";
+  const { user, password, action } = req.body;
+  const consulta = "";
+  if (action == 1) {
+    consulta =
+      "SELECT * FROM usuario WHERE correo = ? AND clave = SHA2(?, 256)";
+  } else {
+    consulta = "SELECT * FROM usuar";
+  }
 
   try {
     conn.query(consulta, [user, password], (err, result) => {
@@ -17,7 +21,7 @@ module.exports.login = (req, res) => {
         const token = jwt.sign({ user }, "Stack", {
           expiresIn: "5m",
         });
-        console.log("bienvenido");
+        console.log(token);
         res.send({ token });
       } else {
         console.log("wrong user");

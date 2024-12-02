@@ -1,11 +1,14 @@
 import { useState } from "react";
+
 type Props = {};
 
 function LoginForm({}: Props) {
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
+  const [action, setAction] = useState(0);
   const [error, setError] = useState(false);
   const handleSubmit = (e: any) => {
+    setAction(1);
     e.preventDefault();
     if (user === "" || password === "") {
       setError(true);
@@ -17,6 +20,7 @@ function LoginForm({}: Props) {
     const data = {
       user: user,
       password: password,
+      action: action,
     };
 
     fetch("http://localhost:3000/login", {
@@ -26,7 +30,14 @@ function LoginForm({}: Props) {
     })
       .then((response) => response.json())
       .then((result) => {
-        console.log(result);
+        console.log(result.token);
+        if (result) {
+          localStorage.setItem("token", result.token);
+          localStorage.setItem("user", user);
+          location.reload();
+        } else {
+          console.log("no hay token");
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -55,7 +66,18 @@ function LoginForm({}: Props) {
               placeholder="Password"
             />
           </div>
-          <button className="btn btn-primary w-100 mt-3">Login</button>
+          <button
+            onClick={() => setAction(1)}
+            className="btn btn-primary w-100 mt-3"
+          >
+            Login
+          </button>
+          <button
+            onClick={() => setAction(0)}
+            className="btn btn-primary w-100 mt-3"
+          >
+            Sign In
+          </button>
           {error && <p>Por favor llenar todos los campos</p>}
         </div>
       </form>
