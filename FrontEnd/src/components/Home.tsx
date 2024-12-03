@@ -12,6 +12,34 @@ function Home({}: Props) {
     localStorage.clear();
     location.reload();
   };
+
+  const data = {
+    user: localStorage.getItem("user"),
+  };
+  const handleAccountDeactivation = () => {
+    fetch("http://localhost:3000/account-deactivation", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        if (result) {
+          console.log(result.message);
+          if (typeof result.message !== "undefined") {
+            alert(result.message);
+          }
+          location.reload();
+        } else {
+          console.log("fallo la elimnacion de la cuenta");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    localStorage.clear();
+    location.reload();
+  };
   return (
     <div style={{ textAlign: "center", marginTop: "50px" }}>
       hola {localStorage.getItem("user")}
@@ -26,6 +54,12 @@ function Home({}: Props) {
           className="btn btn-primary w-100 mt-3"
         >
           cambiar contrasena
+        </button>
+        <button
+          onClick={handleAccountDeactivation}
+          className="btn btn-primary w-100 mt-3"
+        >
+          Eliminar Cuenta
         </button>
       </div>
     </div>
